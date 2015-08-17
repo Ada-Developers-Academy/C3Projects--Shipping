@@ -1,4 +1,4 @@
-Jeri & Anita - Team FedAx
+Anita & Jeri - Team FedAx
 
 # Shipping!
 Build a stand-alone shipping service API that calculates estimated shipping cost for an order from another team's bEtsy application.
