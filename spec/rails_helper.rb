@@ -5,6 +5,15 @@ require File.expand_path('../../config/environment', __FILE__)
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 require 'spec_helper'
 require 'rspec/rails'
+
+
+VCR.configure do |c|
+  # c.ignore_request { |r| URI(r.uri).contain("/users/2/")}
+  c.allow_http_connections_when_no_cassette = true
+  c.cassette_library_dir = 'spec/vcr'
+  c.hook_into :webmock
+  c.configure_rspec_metadata!
+end
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
@@ -24,7 +33,7 @@ require 'rspec/rails'
 
 # Checks for pending migrations before tests are run.
 # If you are not using ActiveRecord, you can remove this line.
-ActiveRecord::Migration.maintain_test_schema!
+# ActiveRecord::Migration.maintain_test_schema!
 
 RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
