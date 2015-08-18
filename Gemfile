@@ -1,6 +1,9 @@
 source 'https://rubygems.org'
 
+gem 'dotenv-rails', groups: [:development, :test]
+
 gem 'active_shipping'
+gem 'activesupport', '~> 4.2.0'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.3'
 # Use sqlite3 as the database for Active Record
@@ -50,6 +53,7 @@ group :development, :test do
 
   gem 'factory_girl_rails', '~> 4.0'
   gem 'simplecov', require: false
+
 end
 
 group :production do
