@@ -27,9 +27,17 @@ class ShippingRate
 
   private
 
+  def formate_ups_rates(rates)
+    rates_hash = {}
+    rates.sort_by(&:price).map do |rate|
+      rates_hash[rate.service_name] = {"price" => rate.total_price, "delivery_date" => rate.delivery_date}
+    end
+    rates_hash
+  end
+
   def get_rates_from_shipper(shipper)
     response = shipper.find_rates(origin, destination, package)
-    response.rates.sort_by(&:price)
+    formate_ups_rates(response.rates)
   end
 
   def valid_locations # OPTIMIZE: it might be fun to make these error messages be more descriptive / include location errors
