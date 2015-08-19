@@ -2,10 +2,9 @@ require 'rails_helper'
 require 'shipping_location'
 
 RSpec.describe ShippingLocation do
-  let(:valid_loc) { ShippingLocation.new(city: "Beaverton", state: "OR", zip: 97005, country: "USA")}
-  let(:invalid_loc) { ShippingLocation.new }
   describe "validations" do
     context "invalid" do
+      let(:invalid_loc) { ShippingLocation.new }
       it "requires a city" do
         expect(invalid_loc).to_not be_valid
         expect(invalid_loc.errors.keys).to include :city
@@ -28,16 +27,17 @@ RSpec.describe ShippingLocation do
     end
 
     context "valid" do
+      let(:valid_loc) { ShippingLocation.new(city: "Beaverton", state: "OR", zip: 97005, country: "USA")}
       it "should be a valid instance" do
         expect(valid_loc).to be_valid
         expect(valid_loc).to be_an_instance_of ShippingLocation
       end
     end
+  end
 
-    context "inheritance" do
-      it "should be a child of ActiveShipping::Location" do
-        expect(ShippingLocation.ancestors).to include ActiveShipping::Location
-      end
+  describe "inheritance" do
+    it "should be a child of ActiveShipping::Location" do
+      expect(ShippingLocation.ancestors).to include ActiveShipping::Location
     end
   end
 end
