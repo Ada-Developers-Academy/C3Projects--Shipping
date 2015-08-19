@@ -16,8 +16,8 @@ class ShippingRate
   end
 
   def ups_rates # TODO: put in actual credentials
-    ups = ActiveShipping::UPS.new(login: 'your ups login', password: 'your ups password', key: 'your ups xml key')
-    get_rates_from_shipper(ups)
+    ups = ActiveShipping::UPS.new(login: ENV["ACTIVESHIPPING_UPS_LOGIN"], password: ENV["ACTIVESHIPPING_UPS_PASSWORD"], key: ENV["ACTIVESHIPPING_UPS_KEY"])
+    format_ups_rates(get_rates_from_shipper(ups))
   end
 
   def usps_rates
@@ -27,6 +27,12 @@ class ShippingRate
 
   private
 
+  def format_ups_rates(rates)
+    rates.sort_by(&:price).map do |rate|
+      { service: rate.service_name, price: rate.total_price, delivery_date: rate.delivery_date }
+    end
+  end
+
   def get_rates_from_shipper(shipper)
     response = shipper.find_rates(origin, destination, package)
     response.rates
@@ -34,7 +40,7 @@ class ShippingRate
 
   def format_usps_rates(rates)
     rates.sort_by(&:price).map{ |rate|
-      { rate.service_name => { price: rate.price } }
+      { service: rate.service_name, price: rate.price }
     }
   end
 

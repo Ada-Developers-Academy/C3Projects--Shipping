@@ -83,6 +83,20 @@ RSpec.describe ShippingRate do
     end
   end
 
+  describe "UPS" do
+    let(:ups) {ShippingRate.new(origin: location1, destination: location2, package: package)}
+    let(:response) {VCR.use_cassette("/ups_rates", record: :new_episodes) {ups.ups_rates}}
+
+    it "returns an array" do
+      expect(response).to be_an_instance_of Array
+    end
+
+    it "should sort by price" do
+      rates = response.map { |rate| rate[:price] }
+      expect(rates.sort).to eq(rates)
+    end
+  end
+
   describe '#usps_rates' do
     let(:shipping_rate) { ShippingRate.new( origin: location1, destination: location2, package: package ) }
 
@@ -95,9 +109,7 @@ RSpec.describe ShippingRate do
       end
 
       it "is sorted by price" do
-        rates = response.map{ |rate| rate.values.first[:price] }
-
-        expect(rates).to be_an_instance_of(Array)
+        rates = response.map{ |rate| rate[:price] }
         expect(rates.sort).to eq(rates)
       end
     end
