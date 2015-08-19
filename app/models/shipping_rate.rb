@@ -17,17 +17,17 @@ class ShippingRate
 
   def ups_rates # TODO: put in actual credentials
     ups = ActiveShipping::UPS.new(login: ENV["ACTIVESHIPPING_UPS_LOGIN"], password: ENV["ACTIVESHIPPING_UPS_PASSWORD"], key: ENV["ACTIVESHIPPING_UPS_KEY"])
-    get_rates_from_shipper(ups)
+    format_ups_rates(get_rates_from_shipper(ups))
   end
 
-  def usps_rates # TODO: put in actual credentials
-    usps = ActiveShipping::USPS.new(login: 'your usps account number', password: 'your usps password')
-    get_rates_from_shipper(usps)
+  def usps_rates
+    usps = ActiveShipping::USPS.new(login: ENV['ACTIVESHIPPING_USPS_LOGIN'])
+    format_usps_rates(get_rates_from_shipper(usps))
   end
 
   private
 
-  def formate_ups_rates(rates)
+  def format_ups_rates(rates)
     rates_hash = {}
     rates.sort_by(&:price).map do |rate|
       rates_hash[rate.service_name] = {"price" => rate.total_price, "delivery_date" => rate.delivery_date}
@@ -37,7 +37,13 @@ class ShippingRate
 
   def get_rates_from_shipper(shipper)
     response = shipper.find_rates(origin, destination, package)
-    formate_ups_rates(response.rates)
+    response.rates
+  end
+
+  def format_usps_rates(rates)
+    rates.sort_by(&:price).map{ |rate|
+      { rate.service_name => { price: rate.price } }
+    }
   end
 
   def valid_locations # OPTIMIZE: it might be fun to make these error messages be more descriptive / include location errors

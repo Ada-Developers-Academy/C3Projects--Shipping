@@ -2,11 +2,11 @@ require 'rails_helper'
 require 'shipping_rate'
 
 RSpec.describe ShippingRate do
-  describe 'validations' do
-    let(:location1) { ShippingLocation.new(country: 'US', state: 'CA', city: 'Beverly Hills', zip: '90210') }
-    let(:location2) { ShippingLocation.new(country: 'US', state: 'WA', city: 'Seattle', zip: '98101') }
-    let(:package) { ActiveShipping::Package.new(12, [15, 10, 4.5], :units => :imperial) }
+  let(:location1) { ShippingLocation.new(country: 'US', state: 'CA', city: 'Beverly Hills', zip: '90210') }
+  let(:location2) { ShippingLocation.new(country: 'US', state: 'WA', city: 'Seattle', zip: '98101') }
+  let(:package) { ActiveShipping::Package.new(12, [15, 10, 4.5], :units => :imperial) }
 
+  describe 'validations' do
     it 'is valid' do
       r = ShippingRate.new(origin: location1, destination: location2, package: package)
 
@@ -96,6 +96,26 @@ RSpec.describe ShippingRate do
 
     it "should sort by price" do
       expect(response["UPS Ground"]["price"]).to be < response["UPS Three-Day Select"]["price"]
+    end
+  end
+
+  describe '#usps_rates' do
+    let(:shipping_rate) { ShippingRate.new( origin: location1, destination: location2, package: package ) }
+
+    describe "the response" do
+      let(:response) { VCR.use_cassette('USPS') { shipping_rate.usps_rates } }
+
+      it "returns an array of hashes" do
+        expect(response).to be_an_instance_of(Array)
+        expect(response.first).to be_an_instance_of(Hash)
+      end
+
+      it "is sorted by price" do
+        rates = response.map{ |rate| rate.values.first[:price] }
+
+        expect(rates).to be_an_instance_of(Array)
+        expect(rates.sort).to eq(rates)
+      end
     end
   end
 end
