@@ -92,7 +92,8 @@ RSpec.describe ShippingRate do
     end
 
     it "should sort by price" do
-      expect(response.first[:price]).to be < response[1][:price]
+      rates = response.map { |rate| rate[:price] }
+      expect(rates.sort).to eq(rates)
     end
   end
 
@@ -109,8 +110,6 @@ RSpec.describe ShippingRate do
 
       it "is sorted by price" do
         rates = response.map{ |rate| rate[:price] }
-
-        expect(rates).to be_an_instance_of(Array)
         expect(rates.sort).to eq(rates)
       end
     end
