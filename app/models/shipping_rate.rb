@@ -16,7 +16,7 @@ class ShippingRate
   end
 
   def ups_rates # TODO: put in actual credentials
-    ups = ActiveShipping::UPS.new(login: 'your ups login', password: 'your ups password', key: 'your ups xml key')
+    ups = ActiveShipping::UPS.new(login: ENV["ACTIVESHIPPING_UPS_LOGIN"], password: ENV["ACTIVESHIPPING_UPS_PASSWORD"], key: ENV["ACTIVESHIPPING_UPS_KEY"])
     get_rates_from_shipper(ups)
   end
 
