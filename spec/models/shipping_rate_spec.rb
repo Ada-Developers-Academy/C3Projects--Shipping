@@ -82,4 +82,28 @@ RSpec.describe ShippingRate do
       end
     end
   end
+
+  describe "UPS" do
+    let(:location1) { ShippingLocation.new(country: 'US', state: 'CA', city: 'Beverly Hills', zip: '90210') }
+    let(:location2) { ShippingLocation.new(country: 'US', state: 'WA', city: 'Seattle', zip: '98101') }
+    let(:package) { ActiveShipping::Package.new(12, [15, 10, 4.5], :units => :imperial) }
+    let(:ups) {ShippingRate.new(origin: location1, destination: location2, package: package)}
+    let(:response) {VCR.use_cassette("/ups_rates", record: :new_episodes) {ups.ups_rates}}
+
+    it "returns shipping info" do
+      expect(response).to be_an_instance_of Hash
+    end
+
+    it "should sort by price" do
+      expect(response["UPS Ground"]["price"]).to be < response["UPS Three-Day Select"]["price"]
+    end
+  end
 end
+
+
+
+
+
+
+
+
