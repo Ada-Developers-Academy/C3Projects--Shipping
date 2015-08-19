@@ -20,16 +20,22 @@ class ShippingRate
     get_rates_from_shipper(ups)
   end
 
-  def usps_rates # TODO: put in actual credentials
-    usps = ActiveShipping::USPS.new(login: 'your usps account number', password: 'your usps password')
-    get_rates_from_shipper(usps)
+  def usps_rates
+    usps = ActiveShipping::USPS.new(login: ENV['ACTIVESHIPPING_USPS_LOGIN'])
+    format_usps_rates(get_rates_from_shipper(usps))
   end
 
   private
 
   def get_rates_from_shipper(shipper)
     response = shipper.find_rates(origin, destination, package)
-    response.rates.sort_by(&:price)
+    response.rates
+  end
+
+  def format_usps_rates(rates)
+    rates.sort_by(&:price).map{ |rate|
+      { rate.service_name => { price: rate.price } }
+    }
   end
 
   def valid_locations # OPTIMIZE: it might be fun to make these error messages be more descriptive / include location errors
