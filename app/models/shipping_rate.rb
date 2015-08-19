@@ -28,11 +28,9 @@ class ShippingRate
   private
 
   def format_ups_rates(rates)
-    rates_hash = {}
     rates.sort_by(&:price).map do |rate|
-      rates_hash[rate.service_name] = {"price" => rate.total_price, "delivery_date" => rate.delivery_date}
+      { service: rate.service_name, price: rate.total_price, delivery_date: rate.delivery_date }
     end
-    rates_hash
   end
 
   def get_rates_from_shipper(shipper)
@@ -42,7 +40,7 @@ class ShippingRate
 
   def format_usps_rates(rates)
     rates.sort_by(&:price).map{ |rate|
-      { rate.service_name => { price: rate.price } }
+      { service: rate.service_name, price: rate.price }
     }
   end
 
