@@ -87,7 +87,7 @@ RSpec.describe ShippingRate do
     let(:ups) {ShippingRate.new(origin: location1, destination: location2, package: package)}
     let(:response) {VCR.use_cassette("/ups_rates", record: :new_episodes) {ups.ups_rates}}
 
-    it "returns shipping info" do
+    it "returns an array" do
       expect(response).to be_an_instance_of Array
     end
 
