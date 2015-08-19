@@ -6,14 +6,6 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 require 'spec_helper'
 require 'rspec/rails'
 
-
-VCR.configure do |c|
-  # c.ignore_request { |r| URI(r.uri).contain("/users/2/")}
-  c.allow_http_connections_when_no_cassette = true
-  c.cassette_library_dir = 'spec/vcr'
-  c.hook_into :webmock
-  c.configure_rspec_metadata!
-end
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
