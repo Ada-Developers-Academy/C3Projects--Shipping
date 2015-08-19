@@ -13,11 +13,6 @@ class ShippingRate
     end
   end
 
-  def get_rates_from_shipper(shipper)
-    response = shipper.find_rates(origin, destination, package)
-    response.rates.sort_by(&:price)
-  end
-
   def ups_rates # TODO: put in actual credentials
     ups = ActiveShipping::UPS.new(login: 'your ups login', password: 'your ups password', key: 'your ups xml key')
     get_rates_from_shipper(ups)
@@ -26,5 +21,12 @@ class ShippingRate
   def usps_rates # TODO: put in actual credentials
     usps = ActiveShipping::USPS.new(login: 'your usps account number', password: 'your usps password')
     get_rates_from_shipper(usps)
+  end
+
+  private
+
+  def get_rates_from_shipper(shipper)
+    response = shipper.find_rates(origin, destination, package)
+    response.rates.sort_by(&:price)
   end
 end
