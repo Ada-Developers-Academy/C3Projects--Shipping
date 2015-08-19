@@ -88,11 +88,11 @@ RSpec.describe ShippingRate do
     let(:response) {VCR.use_cassette("/ups_rates", record: :new_episodes) {ups.ups_rates}}
 
     it "returns shipping info" do
-      expect(response).to be_an_instance_of Hash
+      expect(response).to be_an_instance_of Array
     end
 
     it "should sort by price" do
-      expect(response["UPS Ground"]["price"]).to be < response["UPS Three-Day Select"]["price"]
+      expect(response.first[:price]).to be < response[1][:price]
     end
   end
 
@@ -108,7 +108,7 @@ RSpec.describe ShippingRate do
       end
 
       it "is sorted by price" do
-        rates = response.map{ |rate| rate.values.first[:price] }
+        rates = response.map{ |rate| rate[:price] }
 
         expect(rates).to be_an_instance_of(Array)
         expect(rates.sort).to eq(rates)
