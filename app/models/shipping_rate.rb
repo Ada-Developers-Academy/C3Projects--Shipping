@@ -40,7 +40,7 @@ class ShippingRate
 
   def format_usps_rates(rates)
     rates.sort_by(&:price).map{ |rate|
-      { service: rate.service_name, price: rate.price }
+      { service: rate.service_name, price: rate.price, delivery_date: rate.delivery_date }
     }
   end
 
