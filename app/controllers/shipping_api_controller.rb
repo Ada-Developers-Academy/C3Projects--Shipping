@@ -11,6 +11,16 @@ class ShippingApiController < ApplicationController
     end
   end
 
+  def create_log
+    log = Log.new(log_params)
+
+    if log.save
+      render json: log, status: :ok # 200
+    else
+      render json: log.errors, status: :bad_request # 400
+    end
+  end
+
   private
 
   def origin
@@ -44,4 +54,10 @@ class ShippingApiController < ApplicationController
     @shipping_rate = ShippingRate.new(attributes = { origin: origin, destination: destination, package: package } )
   end
 
+<<<<<<< HEAD
+=======
+  def log_params
+    params.require(:log).permit(:customer, :order_id, :service, :cost, :origin, :destination)
+  end
+>>>>>>> e7401120388bcc98350f8dba9e38603eff5fb5e1
 end
