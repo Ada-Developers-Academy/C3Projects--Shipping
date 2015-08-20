@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe ShippingApiController, type: :controller do
 
-  describe "POST rate_compare" do
+  describe "POST rates" do
     let(:params) {
       { origin: { zip: "98101", city: "Seattle", state: "WA", country: "US"},
         destination: { city: "Beaverton", state: "OR", zip: 97005, country: "USA" },
@@ -10,13 +10,14 @@ RSpec.describe ShippingApiController, type: :controller do
       }
     }
 
-    before :each do
-      VCR.use_cassette("/rates", record: :new_episodes) do
-        post :rates, params
-      end
-    end
 
     context "when params are valid" do
+      before :each do
+        VCR.use_cassette("/rates", record: :new_episodes) do
+          post :rates, params
+        end
+      end
+
       it "is successful" do
         expect(response.response_code).to eq(200)
       end
@@ -26,11 +27,11 @@ RSpec.describe ShippingApiController, type: :controller do
       end
 
       describe "the returned json object" do
-        # before :each do
-        #   VCR.use_cassette("/rates", record: :new_episodes) do
-        #     post :rates, params
-        #   end
-        # end
+        before :each do
+          VCR.use_cassette("/rates", record: :new_episodes) do
+            post :rates, params
+          end
+        end
         let(:object) { JSON.parse(response.body) }
 
         it "is an array of hashes" do
@@ -58,7 +59,7 @@ RSpec.describe ShippingApiController, type: :controller do
       let(:object) { JSON.parse(response.body) }
 
       it "returns an error message" do
-        expect(object.errors.keys).to include :origin
+        expect(object.keys).to include "package"
       end
     end
   end
@@ -117,3 +118,4 @@ RSpec.describe ShippingApiController, type: :controller do
     end
   end
 end
+

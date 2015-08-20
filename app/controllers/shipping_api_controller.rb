@@ -1,5 +1,5 @@
 class ShippingApiController < ApplicationController
-  skip_before_filter :verify_authenticity_token, only: :rates
+  skip_before_filter :verify_authenticity_token, only: [:rates, :create_log]
   before_action :set_shipping_rate, only: :rates
 
   def rates
@@ -8,6 +8,7 @@ class ShippingApiController < ApplicationController
       render json: estimates
     else
       render json: @shipping_rate.errors
+
     end
   end
 
@@ -40,24 +41,24 @@ class ShippingApiController < ApplicationController
   end
 
   def package
-    weight = package_params[:weight].to_i
-    dimensions = package_params[:dimensions].map{|d| d.to_i}
-    options = { units: package_params[:units]}
-    ActiveShipping::Package.new(weight, dimensions, options)
+    unless package_params[:weight].nil? || package_params[:dimensions].nil? || package_params[:units].nil?
+      weight = package_params[:weight].to_i
+      dimensions = package_params[:dimensions].map{|d| d.to_i}
+      options = { units: package_params[:units]}
+      ActiveShipping::Package.new(weight, dimensions, options)
+    end
   end
 
   def package_params
-    params.require(:package).permit(:weight, :units, :dimensions => [])
+    params.require(:package).permit(:weight, :units, :dimensions => []).to_hash.symbolize_keys!
   end
 
   def set_shipping_rate
     @shipping_rate = ShippingRate.new(attributes = { origin: origin, destination: destination, package: package } )
   end
 
-<<<<<<< HEAD
-=======
   def log_params
     params.require(:log).permit(:customer, :order_id, :service, :cost, :origin, :destination)
   end
->>>>>>> e7401120388bcc98350f8dba9e38603eff5fb5e1
+
 end
