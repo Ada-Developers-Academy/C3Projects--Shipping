@@ -11,7 +11,9 @@ RSpec.describe ShippingApiController, type: :controller do
     }
 
     before :each do
-      post :rates, params
+      VCR.use_cassette("/rates", record: :new_episodes) do
+        post :rates, params
+      end
     end
 
     context "when params are valid" do
@@ -24,13 +26,39 @@ RSpec.describe ShippingApiController, type: :controller do
       end
 
       describe "the returned json object" do
-        before :each do
-          @object = JSON.parse(response.body)
+        # before :each do
+        #   VCR.use_cassette("/rates", record: :new_episodes) do
+        #     post :rates, params
+        #   end
+        # end
+        let(:object) { JSON.parse(response.body) }
+
+        it "is an array of hashes" do
+          expect(object).to be_an_instance_of Array
+          expect(object.first).to be_an_instance_of Hash
         end
 
-        it "is an array of hashes"
+        it "includes only service, price, and delivery_date" do
+          object.each do |instance|
+            expect(instance.keys).to eq(["service", "price", "delivery_date"])
+          end
+        end
+      end
+    end
+    context "invalid" do
+      let(:invalid_params) { { origin: { zip: nil, country: "USA", state: nil, city: nil},
+                               destination: { zip: nil, country: nil, state: "Seattle", city: nil },
+                               package: {weight: nil, units: nil, dimensions: nil} } }
+      before :each do
+        VCR.use_cassette("/rates", record: :new_episodes) do
+          post :rates, invalid_params
+        end
+      end
 
-        it "includes only service, price, and delivery_date"
+      let(:object) { JSON.parse(response.body) }
+
+      it "returns an error message" do
+        expect(object.errors.keys).to include :city
       end
     end
   end
