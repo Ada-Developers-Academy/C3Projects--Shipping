@@ -45,8 +45,8 @@ class ShippingRate
   end
 
   def valid_locations # OPTIMIZE: it might be fun to make these error messages be more descriptive / include location errors
-    self.errors.add(:origin, "is not valid.") unless self.origin.is_a?(ShippingLocation) && self.origin.valid?
-    self.errors.add(:destination, "is not valid.") unless self.destination.is_a?(ShippingLocation) && self.destination.valid?
+    self.errors.add(:origin, self.origin.errors) unless self.origin.is_a?(ShippingLocation) && self.origin.valid?
+    self.errors.add(:destination, self.destination.errors) unless self.destination.is_a?(ShippingLocation) && self.destination.valid?
   end
 
   def valid_package
