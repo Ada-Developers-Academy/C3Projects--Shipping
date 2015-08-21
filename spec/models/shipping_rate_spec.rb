@@ -76,7 +76,6 @@ RSpec.describe ShippingRate do
 
       it "does not accept a string" do
         r = ShippingRate.new(origin: location1, destination: location2, package: package_string)
-
         expect(r).to be_invalid
         expect(r.errors).to include :package
       end
