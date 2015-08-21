@@ -56,7 +56,6 @@ class ShippingRate
   end
 
   def valid_package
-    # binding.pry
     self.errors.add(:package, "is not valid.") unless self.package.is_a?(ActiveShipping::Package)
   end
 end
