@@ -5,9 +5,9 @@ class ShippingApiController < ApplicationController
   def rates
     if @shipping_rate.valid?
       estimates = @shipping_rate.ups_rates + @shipping_rate.usps_rates
-      render json: estimates
+      render json: estimates, status: :ok # TODO: add status code tests
     else
-      render json: @shipping_rate.errors
+      render json: @shipping_rate.errors, status: :bad_request # TODO: add status code tests
 
     end
   end
