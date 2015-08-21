@@ -45,11 +45,18 @@ class ShippingRate
   end
 
   def valid_locations # OPTIMIZE: it might be fun to make these error messages be more descriptive / include location errors
-    self.errors.add(:origin, self.origin.errors) unless self.origin.is_a?(ShippingLocation) && self.origin.valid?
-    self.errors.add(:destination, self.destination.errors) unless self.destination.is_a?(ShippingLocation) && self.destination.valid?
+    unless self.origin.is_a?(ShippingLocation) && self.origin.valid?
+      errors = self.origin.is_a?(ShippingLocation) ? self.origin.errors : "It is not an instance of ShippingLocation."
+      self.errors.add(:origin, errors)
+    end
+    unless self.destination.is_a?(ShippingLocation) && self.destination.valid?
+      errors = self.destination.is_a?(ShippingLocation) ? self.destination.errors : "It is not an instance of ShippingLocation."
+      self.errors.add(:destination, errors)
+    end
   end
 
   def valid_package
+    # binding.pry
     self.errors.add(:package, "is not valid.") unless self.package.is_a?(ActiveShipping::Package)
   end
 end

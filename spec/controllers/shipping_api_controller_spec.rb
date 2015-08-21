@@ -59,7 +59,6 @@ RSpec.describe ShippingApiController, type: :controller do
       let(:object) { JSON.parse(response.body) }
 
       it "returns an error message" do
-        binding.pry
         expect(object.keys).to include "package"
       end
     end
