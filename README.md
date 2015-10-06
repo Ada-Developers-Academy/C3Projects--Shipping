@@ -1,5 +1,8 @@
 Ashley + Katie
 
+Notes:
+- We decided that we do not need a separate ShippingPackage class because ActiveShipping::Package already includes validations. This is not the case for ActiveShipping::Location.
+
 # Shipping!
 Build a stand-alone shipping service API that calculates estimated shipping cost for an order from another team's bEtsy application.
 
@@ -43,10 +46,10 @@ Given shipping addresses and a set of packages, generate a quote for the cost of
 ## Requirements
 ### Technical Requirements
 #### Your API will:
-- Respond with JSON and proper HTTP response codes  
-- Allow Users to get shipping cost quotes for different delivery types  
-- Allow Users to get a cost comparison of two or more shippers  
-- Log all requests and their associated responses such that an audit could be conducted  
+- Respond with JSON and proper HTTP response codes
+- Allow Users to get shipping cost quotes for different delivery types
+- Allow Users to get a cost comparison of two or more shippers
+- Log all requests and their associated responses such that an audit could be conducted
 - Have appropriate error handling:
   - When a User's request is incomplete, return an appropriate error
   - When a User's request does not process in a timely manner, return an appropriate error

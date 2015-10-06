@@ -15,3 +15,9 @@
 /log/*
 !/log/.keep
 /tmp
+coverage/
+.DS_Store
+
+# THESE ARE IMPORTANT!! These contain the secrets.
+/spec/vcr_cassettes
+.env
